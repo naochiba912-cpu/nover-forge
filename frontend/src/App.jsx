@@ -74,7 +74,7 @@ function ApiKeyModal({ isOpen, onClose }) {
               </li>
               <li style={{ marginBottom: "8px" }}>普段お使いのGoogleアカウントでログインしてください。</li>
               <li style={{ marginBottom: "8px" }}>画面左側にある<strong>「Get API key」</strong>（または「Create API key」）のボタンをタップ（クリック）します。</li>
-              <li style={{ marginBottom: "8px" }}>「Create API key in new project」を選んでキーを発行し、表示された文字列（AIza...で始まるもの）をコピーします。</li>
+              <li style={{ marginBottom: "8px" }}>「Create API key in new project」を選んでキーを発行し、表示された文字列（AQ. や AIza... で始まるもの）をコピーします。</li>
               <li>この画面に戻り、下の入力欄にコピーしたキーを貼り付けて「保存」を押してください！</li>
             </ol>
             <p style={{ color: "var(--warning)", fontWeight: "bold", marginBottom: "var(--sp-md)" }}>
@@ -101,7 +101,7 @@ function ApiKeyModal({ isOpen, onClose }) {
               className="form-input"
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              placeholder="AIzaSy..."
+              placeholder="AQ. または AIza..."
               style={{ width: "100%", marginBottom: "var(--sp-md)" }}
             />
             <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--sp-sm)" }}>
