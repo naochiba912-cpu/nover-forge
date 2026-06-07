@@ -1,7 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from dotenv import load_dotenv
 import os
 from routers import novel
@@ -13,6 +13,13 @@ app = FastAPI(
     description="AI共同小説執筆アプリケーション バックエンドAPI",
     version="1.0.0",
 )
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=400,
+        content={"detail": f"AIプロバイダーエラー: {str(exc)}"}
+    )
 
 app.add_middleware(
     CORSMiddleware,
