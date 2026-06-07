@@ -41,8 +41,8 @@ export default function ResizableLayout({ topContent, bottomContent, hideBottom 
   }, [onDrag, stopDragging]);
 
   return (
-    <div ref={containerRef} style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-      <div style={{ flex: hideBottom ? "1" : `0 0 ${topHeight}`, overflow: "hidden", display: "flex", flexDirection: "column", transition: hideBottom ? "flex 0.3s ease" : "none" }}>
+    <div ref={containerRef} style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minHeight: 0 }}>
+      <div style={{ flex: hideBottom ? "1" : `0 0 ${topHeight}`, overflow: "hidden", display: "flex", flexDirection: "column", minHeight: 0 }}>
         {topContent}
       </div>
       
@@ -65,7 +65,7 @@ export default function ResizableLayout({ topContent, bottomContent, hideBottom 
         <div style={{ width: "30px", height: "2px", background: "var(--sys-border)" }} />
       </div>
       
-      <div style={{ display: hideBottom ? "none" : "flex", flex: 1, overflow: "auto", flexDirection: "column" }}>
+      <div style={{ display: hideBottom ? "none" : "flex", flex: 1, overflow: "auto", flexDirection: "column", minHeight: 0 }}>
         {bottomContent}
       </div>
     </div>

@@ -36,7 +36,7 @@ export default function EpilogueEditor() {
     }
   };
 
-  const topContent = <ChapterViewer onEditStateChange={setIsEditingChapter} />;
+  const topContent = <ChapterViewer isEditingProp={isEditingChapter} onEditStateChange={setIsEditingChapter} />;
 
   const bottomContent = phase === "epilogue" ? (
     <div className="panel fade-in">

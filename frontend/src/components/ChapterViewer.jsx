@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNovel, useNovelDispatch } from "../context/NovelContext";
 import { novelApi } from "../hooks/useNovelApi";
 
-export default function ChapterViewer({ onEditStateChange }) {
+export default function ChapterViewer({ isEditingProp, onEditStateChange }) {
   const { setup, chapters, isGenerating, viewingChapter, selectedChapterIndex } = useNovel();
   const dispatch = useNovelDispatch();
   const [error, setError] = useState("");
@@ -13,12 +13,22 @@ export default function ChapterViewer({ onEditStateChange }) {
   const [redoCustomTitle, setRedoCustomTitle] = useState("");
 
   // 編集モード
-  const [isEditing, setIsEditing] = useState(false);
+  const [localIsEditing, setLocalIsEditing] = useState(false);
   const [editContent, setEditContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
+  const isEditing = isEditingProp !== undefined ? isEditingProp : localIsEditing;
+
+  useEffect(() => {
+    if (isEditing && !editContent && viewingChapter) {
+      setEditContent(viewingChapter.content);
+    }
+  }, [isEditing, viewingChapter, editContent]);
+
   const handleEditState = (editing) => {
-    setIsEditing(editing);
+    if (isEditingProp === undefined) {
+      setLocalIsEditing(editing);
+    }
     if (onEditStateChange) {
       onEditStateChange(editing);
     }

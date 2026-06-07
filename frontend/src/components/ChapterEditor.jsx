@@ -45,7 +45,7 @@ export default function ChapterEditor() {
     }
   };
 
-  const topContent = <ChapterViewer onEditStateChange={setIsEditingChapter} />;
+  const topContent = <ChapterViewer isEditingProp={isEditingChapter} onEditStateChange={setIsEditingChapter} />;
 
   const bottomContent = phase === "writing" ? (
     <div className="panel fade-in">
