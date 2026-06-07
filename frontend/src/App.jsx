@@ -115,7 +115,58 @@ function ApiKeyModal({ isOpen, onClose }) {
   );
 }
 
-function MenuBar({ onOpenApiKeyModal }) {
+function HelpModal({ isOpen, onClose }) {
+  if (!isOpen) return null;
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(0,0,0,0.5)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 1000,
+      }}
+    >
+      <div
+        className="panel fade-in"
+        style={{
+          width: "500px",
+          maxWidth: "90%",
+          maxHeight: "85vh",
+          overflowY: "auto",
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--sp-md)" }}>
+          <h3 style={{ margin: 0 }}>❓ NovelForge の使い方</h3>
+        </div>
+        <div style={{ fontSize: "var(--fs-sm)", lineHeight: "1.6", color: "var(--text-secondary)", marginBottom: "var(--sp-md)" }}>
+          <p>NovelForge は AI と一緒に小説を書き進めるツールです。</p>
+          <ol style={{ paddingLeft: "1.2rem", marginBottom: "var(--sp-md)" }}>
+            <li style={{ marginBottom: "8px" }}><strong>設定:</strong> まずはタイトルや世界観を決めます。AIにおまかせすることも可能です。</li>
+            <li style={{ marginBottom: "8px" }}><strong>プロローグ:</strong> 物語の導入を書きます。</li>
+            <li style={{ marginBottom: "8px" }}><strong>本編:</strong> 1章ずつ「この章で何が起きるか」を指示して生成していきます。</li>
+            <li style={{ marginBottom: "8px" }}><strong>エピローグ:</strong> 物語の結末を書きます。</li>
+            <li style={{ marginBottom: "8px" }}><strong>完成:</strong> 完成した小説をテキストファイルとしてダウンロードできます。</li>
+          </ol>
+          <p style={{ color: "var(--text-muted)", fontSize: "var(--fs-xs)" }}>
+            ※ 「↩️ 最初からやり直す」を押すと、現在書いている小説のデータがすべて消えて最初の画面に戻ります。ご注意ください。
+          </p>
+        </div>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <button className="btn btn-primary" onClick={onClose}>閉じる</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MenuBar({ onOpenApiKeyModal, onOpenHelpModal }) {
   const dispatch = useNovelDispatch();
 
   const handleReset = () => {
@@ -127,12 +178,14 @@ function MenuBar({ onOpenApiKeyModal }) {
   return (
     <div className="menu-bar">
       <span className="menu-bar-item" onClick={handleReset}>
-        ファイル
+        ↩️ 最初からやり直す
       </span>
       <span className="menu-bar-item" onClick={onOpenApiKeyModal}>
         🔑 APIキー設定
       </span>
-      <span className="menu-bar-item">ヘルプ</span>
+      <span className="menu-bar-item" onClick={onOpenHelpModal}>
+        ❓ ヘルプ
+      </span>
     </div>
   );
 }
@@ -177,6 +230,7 @@ function MainContent() {
 
 export default function App() {
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
   // 初回起動時にAPIキーがなければモーダルを開く
   useEffect(() => {
@@ -188,12 +242,19 @@ export default function App() {
   return (
     <div className="window-frame">
       <TitleBar />
-      <MenuBar onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)} />
+      <MenuBar 
+        onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)} 
+        onOpenHelpModal={() => setIsHelpModalOpen(true)}
+      />
       <MainContent />
       <StatusBar />
       <ApiKeyModal
         isOpen={isApiKeyModalOpen}
         onClose={() => setIsApiKeyModalOpen(false)}
+      />
+      <HelpModal
+        isOpen={isHelpModalOpen}
+        onClose={() => setIsHelpModalOpen(false)}
       />
     </div>
   );
