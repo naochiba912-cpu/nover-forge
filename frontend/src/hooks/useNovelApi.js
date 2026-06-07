@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8000/api/novel";
+const API_BASE = import.meta.env.DEV ? "http://localhost:8000/api/novel" : "/api/novel";
 
 async function request(path, options = {}) {
   const apiKey = localStorage.getItem("gemini_api_key");
@@ -10,7 +10,7 @@ async function request(path, options = {}) {
   const config = {
     headers: { 
       "Content-Type": "application/json",
-      "x-gemini-api-key": apiKey
+      "x-api-key": apiKey
     },
     ...options,
   };
@@ -19,7 +19,17 @@ async function request(path, options = {}) {
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.detail || `API Error: ${response.status}`);
+    let errorMsg = `API Error: ${response.status}`;
+    if (error.detail) {
+      if (typeof error.detail === 'string') {
+        errorMsg = error.detail;
+      } else if (Array.isArray(error.detail)) {
+        errorMsg = error.detail.map(d => `${d.loc.join('.')}: ${d.msg}`).join(', ');
+      } else {
+        errorMsg = JSON.stringify(error.detail);
+      }
+    }
+    throw new Error(errorMsg);
   }
 
   return response.json();
