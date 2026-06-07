@@ -79,7 +79,7 @@ export default function ChapterEditor() {
           value={setting}
           onChange={(e) => setSetting(e.target.value)}
           placeholder={`第${nextChapterNumber}章の展開メモを入力してください。\n\n例:\n・前章の謎が一つ解ける\n・新しい仲間との出会い\n・敵の正体が少し見える`}
-          style={{ minHeight: "120px", width: "100%" }}
+          style={{ minHeight: "120px", width: "100%", resize: "none" }}
         />
       </div>
 

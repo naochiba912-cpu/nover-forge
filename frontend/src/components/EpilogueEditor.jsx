@@ -61,7 +61,7 @@ export default function EpilogueEditor() {
         value={setting}
         onChange={(e) => setSetting(e.target.value)}
         placeholder="エピローグの展開を入力してください。\n\n例:\n・数年後の主人公たちの姿\n・平和を取り戻した世界\n・最後に残された小さな謎"
-        style={{ minHeight: "150px", width: "100%" }}
+        style={{ minHeight: "150px", width: "100%", resize: "none" }}
       />
 
       {error && (
