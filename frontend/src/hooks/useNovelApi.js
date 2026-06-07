@@ -3,7 +3,7 @@ const API_BASE = import.meta.env.DEV ? "http://localhost:8000/api/novel" : "/api
 async function request(path, options = {}) {
   const apiKey = localStorage.getItem("gemini_api_key");
   if (!apiKey) {
-    throw new Error("Gemini APIキーが設定されていません。右上の「🔑」ボタンから設定してください。");
+    throw new Error("Gemini APIキーが設定されていません。上の「🔑」ボタンから設定してください。");
   }
 
   const url = `${API_BASE}${path}`;
