@@ -4,7 +4,7 @@ import { novelApi } from "../hooks/useNovelApi";
 import GeneratingOverlay from "./GeneratingOverlay";
 
 export default function EpilogueEditor() {
-  const { setup, isGenerating } = useNovel();
+  const { setup, chapters, isGenerating } = useNovel();
   const dispatch = useNovelDispatch();
   const [setting, setSetting] = useState("");
   const [error, setError] = useState("");
@@ -19,7 +19,7 @@ export default function EpilogueEditor() {
     dispatch({ type: "SET_GENERATING", payload: true });
 
     try {
-      const result = await novelApi.generateEpilogue(state.setup, state.chapters, setting.trim());
+      const result = await novelApi.generateEpilogue(setup, chapters, setting.trim());
       dispatch({ type: "ADD_GENERATED_CHAPTER", payload: result.chapter });
     } catch (err) {
       setError(err.message || "エピローグの生成に失敗しました。");

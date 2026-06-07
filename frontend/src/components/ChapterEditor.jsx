@@ -4,7 +4,7 @@ import { novelApi } from "../hooks/useNovelApi";
 import GeneratingOverlay from "./GeneratingOverlay";
 
 export default function ChapterEditor() {
-  const { chapters, isGenerating, viewingChapter, phase } = useNovel();
+  const { setup, chapters, isGenerating, viewingChapter, phase, selectedChapterIndex } = useNovel();
   const dispatch = useNovelDispatch();
   const [setting, setSetting] = useState("");
   const [isFinal, setIsFinal] = useState(false);
@@ -31,7 +31,7 @@ export default function ChapterEditor() {
     dispatch({ type: "SET_GENERATING", payload: true });
 
     try {
-      const result = await novelApi.generateChapter(state.setup, state.chapters, setting.trim(), isFinal);
+      const result = await novelApi.generateChapter(setup, chapters, setting.trim(), isFinal);
       dispatch({ type: "ADD_GENERATED_CHAPTER", payload: result.chapter });
       setSetting("");
       setIsFinal(false);
@@ -48,14 +48,14 @@ export default function ChapterEditor() {
     dispatch({ type: "SET_GENERATING", payload: true });
     try {
       const result = await novelApi.redoChapter(
-        state.selectedChapterIndex,
-        state.setup,
-        state.chapters,
+        selectedChapterIndex,
+        setup,
+        chapters,
         redoSetting.trim()
       );
       dispatch({ 
         type: "REDO_CHAPTER", 
-        payload: { chapterIndex: state.selectedChapterIndex, chapter: result.chapter } 
+        payload: { chapterIndex: selectedChapterIndex, chapter: result.chapter } 
       });
       setIsRedoing(false);
       setRedoSetting("");
