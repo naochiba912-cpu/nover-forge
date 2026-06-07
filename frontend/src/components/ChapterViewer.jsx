@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNovel, useNovelDispatch } from "../context/NovelContext";
 import { novelApi } from "../hooks/useNovelApi";
 
-export default function ChapterViewer() {
+export default function ChapterViewer({ onEditStateChange }) {
   const { setup, chapters, isGenerating, viewingChapter, selectedChapterIndex } = useNovel();
   const dispatch = useNovelDispatch();
   const [error, setError] = useState("");
@@ -16,6 +16,13 @@ export default function ChapterViewer() {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+
+  const handleEditState = (editing) => {
+    setIsEditing(editing);
+    if (onEditStateChange) {
+      onEditStateChange(editing);
+    }
+  };
 
   if (!viewingChapter) return null;
 
@@ -50,7 +57,7 @@ export default function ChapterViewer() {
       setRedoSetting(viewingChapter.setting);
       setRedoCustomTitle(""); // やり直すときはタイトル指定をリセットするか、元のタイトルを入れるか。空でOK
       setIsRedoing(true);
-      setIsEditing(false);
+      handleEditState(false);
     }
   };
 
@@ -65,14 +72,14 @@ export default function ChapterViewer() {
   const startEditing = () => {
     if (viewingChapter) {
       setEditContent(viewingChapter.content);
-      setIsEditing(true);
+      handleEditState(true);
       setIsRedoing(false);
     }
   };
 
   // 編集キャンセル
   const cancelEditing = () => {
-    setIsEditing(false);
+    handleEditState(false);
     setEditContent("");
   };
 
@@ -86,7 +93,7 @@ export default function ChapterViewer() {
         type: "UPDATE_CHAPTER_CONTENT",
         payload: { chapterId: viewingChapter.id, content: editContent },
       });
-      setIsEditing(false);
+      handleEditState(false);
       setEditContent("");
     } catch (err) {
       setError(err.message || "保存に失敗しました。");

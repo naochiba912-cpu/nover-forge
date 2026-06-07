@@ -7,6 +7,7 @@ import ChapterEditor from "./components/ChapterEditor";
 import ChapterSidebar from "./components/ChapterSidebar";
 import EpilogueEditor from "./components/EpilogueEditor";
 import CompletionScreen from "./components/CompletionScreen";
+import SavedWorksModal from "./components/SavedWorksModal";
 
 function ApiKeyModal({ isOpen, onClose }) {
   const [apiKey, setApiKey] = useState("");
@@ -165,7 +166,7 @@ function HelpModal({ isOpen, onClose }) {
   );
 }
 
-function MenuBar({ onOpenApiKeyModal, onOpenHelpModal }) {
+function MenuBar({ onOpenApiKeyModal, onOpenHelpModal, onOpenSavedWorksModal }) {
   const dispatch = useNovelDispatch();
 
   const handleReset = () => {
@@ -178,6 +179,9 @@ function MenuBar({ onOpenApiKeyModal, onOpenHelpModal }) {
     <div className="menu-bar">
       <span className="menu-bar-item" onClick={handleReset}>
         ↩️ 最初からやり直す
+      </span>
+      <span className="menu-bar-item" onClick={onOpenSavedWorksModal}>
+        📁 保存した作品
       </span>
       <span className="menu-bar-item" onClick={onOpenApiKeyModal}>
         🔑 APIキー設定
@@ -230,6 +234,7 @@ function MainContent() {
 export default function App() {
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+  const [isSavedWorksModalOpen, setIsSavedWorksModalOpen] = useState(false);
 
   // 初回起動時にAPIキーがなければモーダルを開く
   useEffect(() => {
@@ -243,6 +248,7 @@ export default function App() {
       <MenuBar 
         onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)} 
         onOpenHelpModal={() => setIsHelpModalOpen(true)}
+        onOpenSavedWorksModal={() => setIsSavedWorksModalOpen(true)}
       />
       <MainContent />
       <StatusBar />
@@ -253,6 +259,10 @@ export default function App() {
       <HelpModal
         isOpen={isHelpModalOpen}
         onClose={() => setIsHelpModalOpen(false)}
+      />
+      <SavedWorksModal
+        isOpen={isSavedWorksModalOpen}
+        onClose={() => setIsSavedWorksModalOpen(false)}
       />
     </div>
   );

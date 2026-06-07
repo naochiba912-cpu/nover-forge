@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useReducer, useEffect as import_react_useEffect } from "react";
 
 const NovelContext = createContext(null);
 const NovelDispatchContext = createContext(null);
@@ -13,8 +13,26 @@ const initialState = {
   viewingChapter: null,
 };
 
+const AUTOSAVE_KEY = "novel_forge_autosave";
+
+function loadInitialState() {
+  try {
+    const saved = localStorage.getItem(AUTOSAVE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return { ...parsed, isGenerating: false };
+    }
+  } catch (e) {
+    console.error("Failed to load autosave", e);
+  }
+  return initialState;
+}
+
 function novelReducer(state, action) {
   switch (action.type) {
+    case "LOAD_STATE":
+      return { ...action.payload, isGenerating: false };
+
     case "SET_PHASE":
       return { ...state, phase: action.payload };
 
@@ -119,7 +137,12 @@ function novelReducer(state, action) {
 }
 
 export function NovelProvider({ children }) {
-  const [state, dispatch] = useReducer(novelReducer, initialState);
+  const [state, dispatch] = useReducer(novelReducer, null, loadInitialState);
+
+  // 自動保存
+  import_react_useEffect(() => {
+    localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(state));
+  }, [state]);
 
   return (
     <NovelContext.Provider value={state}>
