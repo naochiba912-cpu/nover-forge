@@ -9,14 +9,7 @@ export default function SavedWorksModal({ isOpen, onClose }) {
   const [works, setWorks] = useState([]);
   const [saveName, setSaveName] = useState("");
 
-  useEffect(() => {
-    if (isOpen) {
-      loadWorks();
-      setSaveName(state.setup?.title || "名称未設定の作品");
-    }
-  }, [isOpen, state.setup?.title]);
-
-  const loadWorks = () => {
+  function loadWorks() {
     try {
       const saved = localStorage.getItem(SAVED_WORKS_KEY);
       if (saved) {
@@ -25,7 +18,14 @@ export default function SavedWorksModal({ isOpen, onClose }) {
     } catch (e) {
       console.error(e);
     }
-  };
+  }
+
+  useEffect(() => {
+    if (isOpen) {
+      loadWorks();
+      setSaveName(state.setup?.title || "名称未設定の作品");
+    }
+  }, [isOpen, state.setup?.title]);
 
   const handleSave = () => {
     if (!saveName.trim()) return;

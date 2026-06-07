@@ -9,20 +9,17 @@ export default function ResizableLayout({ topContent, bottomContent, hideBottom 
     e.preventDefault();
     isDragging.current = true;
     document.body.style.cursor = "row-resize";
+    document.body.style.userSelect = "none";
   }, []);
 
   const onDrag = useCallback((e) => {
     if (!isDragging.current || !containerRef.current) return;
     
     const containerRect = containerRef.current.getBoundingClientRect();
-    const newTopHeight = e.clientY - containerRect.top;
+    const percentage = ((e.clientY - containerRect.top) / containerRect.height) * 100;
     
-    // 最小・最大の高さを制限
-    const minHeight = 100; // px
-    const maxHeight = containerRect.height - 100;
-    
-    if (newTopHeight >= minHeight && newTopHeight <= maxHeight) {
-      setTopHeight(`${newTopHeight}px`);
+    if (percentage >= 10 && percentage <= 90) {
+      setTopHeight(`${percentage}%`);
     }
   }, []);
 
@@ -30,6 +27,7 @@ export default function ResizableLayout({ topContent, bottomContent, hideBottom 
     if (isDragging.current) {
       isDragging.current = false;
       document.body.style.cursor = "default";
+      document.body.style.userSelect = "auto";
     }
   }, []);
 
@@ -48,32 +46,28 @@ export default function ResizableLayout({ topContent, bottomContent, hideBottom 
         {topContent}
       </div>
       
-      {!hideBottom && (
-        <>
-          <div
-            onMouseDown={startDragging}
-            style={{
-              height: "8px",
-              background: "var(--sys-border-light)",
-              cursor: "row-resize",
-              margin: "var(--sp-xs) 0",
-              borderRadius: "4px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              transition: "background 0.2s"
-            }}
-            onMouseEnter={(e) => e.target.style.background = "var(--accent-light)"}
-            onMouseLeave={(e) => e.target.style.background = "var(--sys-border-light)"}
-          >
-            <div style={{ width: "30px", height: "2px", background: "var(--sys-border)" }} />
-          </div>
-          
-          <div style={{ flex: 1, overflow: "auto", display: "flex", flexDirection: "column" }}>
-            {bottomContent}
-          </div>
-        </>
-      )}
+      <div
+        onMouseDown={startDragging}
+        style={{
+          display: hideBottom ? "none" : "flex",
+          height: "8px",
+          background: "var(--sys-border-light)",
+          cursor: "row-resize",
+          margin: "var(--sp-xs) 0",
+          borderRadius: "4px",
+          justifyContent: "center",
+          alignItems: "center",
+          transition: "background 0.2s"
+        }}
+        onMouseEnter={(e) => e.target.style.background = "var(--accent-light)"}
+        onMouseLeave={(e) => e.target.style.background = "var(--sys-border-light)"}
+      >
+        <div style={{ width: "30px", height: "2px", background: "var(--sys-border)" }} />
+      </div>
+      
+      <div style={{ display: hideBottom ? "none" : "flex", flex: 1, overflow: "auto", flexDirection: "column" }}>
+        {bottomContent}
+      </div>
     </div>
   );
 }

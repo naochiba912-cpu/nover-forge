@@ -1,7 +1,6 @@
 from typing import List
 import asyncio
-# pyrefly: ignore [missing-import]
-from google import genai
+import google.generativeai as genai
 from models.schemas import NovelSetupRequest, NovelSetupResponse, NovelLength, Chapter
 
 
@@ -11,8 +10,8 @@ class GeminiProvider:
     def __init__(self, api_key: str):
         if not api_key:
             raise ValueError("Gemini APIキーが必要です。")
-        self.client = genai.Client(api_key=api_key)
-        self.model_name = "gemini-3.5-flash"
+        genai.configure(api_key=api_key, transport="rest")
+        self.model = genai.GenerativeModel("gemini-3.5-flash")
 
     def _build_context(
         self, setup: NovelSetupResponse, chapters: List[Chapter] = None
@@ -52,11 +51,7 @@ class GeminiProvider:
         if setup.genre:
             prompt += f"\nヒント - 希望ジャンル: {setup.genre}"
 
-        response = await asyncio.to_thread(
-            self.client.models.generate_content,
-            model=self.model_name,
-            contents=prompt
-        )
+        response = await asyncio.to_thread(self.model.generate_content, prompt)
         text = response.text
 
         # レスポンスをパースする
@@ -90,11 +85,7 @@ class GeminiProvider:
 【プロローグ設定】
 {setting}"""
 
-        response = await asyncio.to_thread(
-            self.client.models.generate_content,
-            model=self.model_name,
-            contents=prompt
-        )
+        response = await asyncio.to_thread(self.model.generate_content, prompt)
         return response.text
 
     async def generate_chapter(
@@ -136,11 +127,7 @@ class GeminiProvider:
 【この章の設定・展開メモ】
 {setting}"""
 
-        response = await asyncio.to_thread(
-            self.client.models.generate_content,
-            model=self.model_name,
-            contents=prompt
-        )
+        response = await asyncio.to_thread(self.model.generate_content, prompt)
         text = response.text.strip()
         
         if custom_title:
@@ -178,11 +165,7 @@ class GeminiProvider:
 【エピローグ設定】
 {setting}"""
 
-        response = await asyncio.to_thread(
-            self.client.models.generate_content,
-            model=self.model_name,
-            contents=prompt
-        )
+        response = await asyncio.to_thread(self.model.generate_content, prompt)
         return response.text
 
     async def assist_ideas(
@@ -215,11 +198,7 @@ class GeminiProvider:
 - 余計な前置きや説明は不要
 """
 
-        response = await asyncio.to_thread(
-            self.client.models.generate_content,
-            model=self.model_name,
-            contents=prompt
-        )
+        response = await asyncio.to_thread(self.model.generate_content, prompt)
         text = response.text
 
         # レスポンスをパースして案を分離する
