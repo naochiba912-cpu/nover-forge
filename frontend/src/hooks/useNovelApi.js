@@ -51,10 +51,10 @@ export const novelApi = {
     }),
 
   /** 章を生成 */
-  generateChapter: (setup, chapters, setting, isFinal = false) =>
+  generateChapter: (setup, chapters, setting, isFinal = false, customTitle = "") =>
     request("/generate-chapter", {
       method: "POST",
-      body: JSON.stringify({ setup, chapters, setting, is_final: isFinal }),
+      body: JSON.stringify({ setup, chapters, setting, is_final: isFinal, custom_title: customTitle || undefined }),
     }),
 
   /** エピローグを生成 */
@@ -64,11 +64,11 @@ export const novelApi = {
       body: JSON.stringify({ setup, chapters, setting }),
     }),
 
-  /** 章をやり直し */
-  redoChapter: (chapterId, setup, chapters, setting) =>
+  /** 指定した章をやり直す */
+  redoChapter: (chapterId, setup, chapters, setting, customTitle = "") =>
     request(`/redo-chapter/${chapterId}`, {
       method: "POST",
-      body: JSON.stringify({ setup, chapters, setting }),
+      body: JSON.stringify({ setup, chapters, setting, custom_title: customTitle || undefined }),
     }),
 
   /** アイデアアシスト */

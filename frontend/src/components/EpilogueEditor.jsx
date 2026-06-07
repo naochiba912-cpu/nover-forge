@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useNovel, useNovelDispatch } from "../context/NovelContext";
 import { novelApi } from "../hooks/useNovelApi";
 import GeneratingOverlay from "./GeneratingOverlay";
+import ChapterViewer from "./ChapterViewer";
 
 export default function EpilogueEditor() {
-  const { setup, chapters, isGenerating } = useNovel();
+  const { setup, chapters, isGenerating, phase } = useNovel();
   const dispatch = useNovelDispatch();
   const [setting, setSetting] = useState("");
   const [error, setError] = useState("");
@@ -30,40 +31,26 @@ export default function EpilogueEditor() {
 
   return (
     <div className="content-area">
-      <div className="content-scroll">
-        <div className="fade-in" style={{ maxWidth: "800px", margin: "0 auto" }}>
-          <div style={{ marginBottom: "var(--sp-xl)" }}>
-            <h2
-              style={{
-                fontSize: "var(--fs-2xl)",
-                fontWeight: 700,
-                marginBottom: "var(--sp-xs)",
-              }}
-            >
-              🏁 エピローグ設定
-            </h2>
-            <p
-              style={{
-                color: "var(--text-secondary)",
-                fontSize: "var(--fs-md)",
-              }}
-            >
+      <ChapterViewer />
+
+      {phase === "epilogue" && (
+        <div className="panel fade-in" style={{ marginTop: "var(--sp-lg)" }}>
+          <div className="panel-header">
+            <span className="panel-title">🏁 エピローグ設定</span>
+          </div>
+          <div style={{ marginBottom: "var(--sp-lg)" }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "var(--fs-md)" }}>
               『{setup?.title}』の物語を締めくくるエピローグの設定を入力してください。
             </p>
           </div>
 
-          <div className="panel">
-            <div className="panel-header">
-              <span className="panel-title">📝 エピローグの設定</span>
-            </div>
-            <textarea
-              className="form-textarea"
-              value={setting}
-              onChange={(e) => setSetting(e.target.value)}
-              placeholder={`エピローグの展開を入力してください。\n\n例:\n・物語の後日談\n・主人公のその後\n・世界がどう変わったか`}
-              style={{ minHeight: "160px", width: "100%" }}
-            />
-          </div>
+          <textarea
+            className="form-textarea"
+            value={setting}
+            onChange={(e) => setSetting(e.target.value)}
+            placeholder={`エピローグの展開を入力してください。\n\n例:\n・物語の後日談\n・主人公のその後\n・世界がどう変わったか`}
+            style={{ minHeight: "160px", width: "100%" }}
+          />
 
           {error && (
             <div
@@ -91,7 +78,7 @@ export default function EpilogueEditor() {
             </button>
           </div>
         </div>
-      </div>
+      )}
 
       {isGenerating && (
         <GeneratingOverlay message="エピローグを執筆中..." />

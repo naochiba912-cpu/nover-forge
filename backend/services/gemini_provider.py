@@ -95,7 +95,8 @@ class GeminiProvider:
         setting: str,
         chapter_number: int,
         is_final: bool,
-    ) -> str:
+        custom_title: str = None,
+    ) -> tuple[str, str]:
         context = self._build_context(setup, previous_chapters)
 
         final_instruction = ""
@@ -105,20 +106,46 @@ class GeminiProvider:
                 "これまでの伏線を回収し、感動的な結末に向かう展開を描いてください。"
             )
 
+        title_instruction = ""
+        if custom_title:
+            title_instruction = "- 章タイトルや見出しは含めず、本文のみを出力してください"
+        else:
+            title_instruction = (
+                "- 最初の行に必ず「タイトル：[生成した章のタイトル]」と出力し、次の行から本文を書いてください\n"
+                "- タイトルはこの章の展開を象徴する魅力的なものにしてください"
+            )
+
         prompt = f"""{context}
 
 【指示】
 第{chapter_number}章を執筆してください。
 - これまでの物語の流れを自然に受けて、展開を進めてください
 - 800〜1500文字程度で書いてください
-- 章タイトルや見出しは含めず、本文のみを出力してください
+{title_instruction}
 {final_instruction}
 
 【この章の設定・展開メモ】
 {setting}"""
 
         response = await asyncio.to_thread(self.model.generate_content, prompt)
-        return response.text
+        text = response.text.strip()
+        
+        if custom_title:
+            return custom_title, text
+            
+        # Parse generated title
+        title = f"第{chapter_number}章"
+        content = text
+        
+        lines = text.split("\n")
+        if lines and ("タイトル:" in lines[0] or "タイトル：" in lines[0]):
+            separator = "：" if "：" in lines[0] else ":"
+            parts = lines[0].split(separator, 1)
+            if len(parts) > 1:
+                title = parts[1].strip()
+            content = "\n".join(lines[1:]).strip()
+            
+        return title, content
 
     async def generate_epilogue(
         self,

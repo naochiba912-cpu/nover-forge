@@ -56,19 +56,20 @@ async def generate_chapter(
     """章の本文を生成する。"""
     chapter_number = len([c for c in request.chapters if c.type == ChapterType.CHAPTER]) + 1
 
-    content = await provider.generate_chapter(
+    title, content = await provider.generate_chapter(
         request.setup,
         request.chapters,
         request.setting,
         chapter_number,
         request.is_final,
+        request.custom_title,
     )
 
     chapter = Chapter(
         id=len(request.chapters),
         type=ChapterType.CHAPTER,
         chapter_number=chapter_number,
-        title=f"第{chapter_number}章",
+        title=title,
         setting=request.setting,
         content=content,
         is_final=request.is_final,
@@ -119,18 +120,19 @@ async def redo_chapter(
             content=content,
         )
     elif target_chapter.type == ChapterType.CHAPTER:
-        content = await provider.generate_chapter(
+        title, content = await provider.generate_chapter(
             request.setup,
             previous_chapters,
             request.setting,
             target_chapter.chapter_number,
             False,
+            request.custom_title,
         )
         chapter = Chapter(
             id=chapter_id,
             type=ChapterType.CHAPTER,
             chapter_number=target_chapter.chapter_number,
-            title=target_chapter.title,
+            title=title,
             setting=request.setting,
             content=content,
         )

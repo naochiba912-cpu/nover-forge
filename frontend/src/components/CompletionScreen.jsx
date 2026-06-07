@@ -2,12 +2,13 @@ import { useState } from "react";
 import { useNovel, useNovelDispatch } from "../context/NovelContext";
 import { novelApi } from "../hooks/useNovelApi";
 import { downloadAsTextFile } from "../utils/exportUtils";
+import ChapterViewer from "./ChapterViewer";
 
 export default function CompletionScreen() {
-  const { setup, chapters } = useNovel();
+  const { setup, chapters, viewingChapter } = useNovel();
   const dispatch = useNovelDispatch();
-  const [viewingIndex, setViewingIndex] = useState(-1);
   const [isExporting, setIsExporting] = useState(false);
+  const [showFullText, setShowFullText] = useState(true);
 
   const charCount = chapters.reduce(
     (sum, ch) => sum + (ch.content?.length || 0),
@@ -31,9 +32,6 @@ export default function CompletionScreen() {
   const handleNewNovel = () => {
     dispatch({ type: "RESET" });
   };
-
-  const displayChapter =
-    viewingIndex >= 0 ? chapters[viewingIndex] : null;
 
   return (
     <div className="content-area">
@@ -101,27 +99,34 @@ export default function CompletionScreen() {
               }}
             >
               <button
-                className={`btn btn-sm ${viewingIndex === -1 ? "btn-primary" : ""}`}
-                onClick={() => setViewingIndex(-1)}
+                className={`btn btn-sm ${showFullText ? "btn-primary" : ""}`}
+                onClick={() => setShowFullText(true)}
               >
                 全文
               </button>
               {chapters.map((ch, idx) => (
                 <button
                   key={ch.id}
-                  className={`btn btn-sm ${viewingIndex === idx ? "btn-primary" : ""}`}
-                  onClick={() => setViewingIndex(idx)}
+                  className={`btn btn-sm ${!showFullText && viewingChapter?.id === ch.id ? "btn-primary" : ""}`}
+                  onClick={() => {
+                    setShowFullText(false);
+                    dispatch({ type: "SELECT_CHAPTER", payload: idx });
+                  }}
                 >
                   {ch.title}
                 </button>
               ))}
             </div>
 
-            <div className="novel-text" style={{ maxHeight: "600px" }}>
-              {displayChapter
-                ? displayChapter.content
-                : chapters.map((ch) => `\n── ${ch.title} ──\n\n${ch.content}`).join("\n\n")}
-            </div>
+            {showFullText ? (
+              <div className="novel-text" style={{ maxHeight: "600px" }}>
+                {chapters.map((ch) => `\n── ${ch.title} ──\n\n${ch.content}`).join("\n\n")}
+              </div>
+            ) : (
+              <div style={{ marginTop: "var(--sp-md)" }}>
+                <ChapterViewer />
+              </div>
+            )}
           </div>
         </div>
       </div>

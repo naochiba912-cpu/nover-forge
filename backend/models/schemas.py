@@ -67,6 +67,7 @@ class GenerateChapterRequest(BaseModel):
     chapters: List[Chapter]
     setting: str
     is_final: bool = False
+    custom_title: Optional[str] = None
 
 
 class GenerateEpilogueRequest(BaseModel):
@@ -79,6 +80,7 @@ class RedoChapterRequest(BaseModel):
     setup: NovelSetupResponse
     chapters: List[Chapter]
     setting: str
+    custom_title: Optional[str] = None
 
 
 class UpdateChapterRequest(BaseModel):
