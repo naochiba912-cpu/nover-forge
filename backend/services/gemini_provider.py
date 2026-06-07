@@ -1,4 +1,5 @@
 from typing import List
+import asyncio
 import google.generativeai as genai
 from models.schemas import NovelSetupRequest, NovelSetupResponse, NovelLength, Chapter
 
@@ -50,7 +51,7 @@ class GeminiProvider:
         if setup.genre:
             prompt += f"\nヒント - 希望ジャンル: {setup.genre}"
 
-        response = await self.model.generate_content_async(prompt)
+        response = await asyncio.to_thread(self.model.generate_content, prompt)
         text = response.text
 
         # レスポンスをパースする
@@ -84,7 +85,7 @@ class GeminiProvider:
 【プロローグ設定】
 {setting}"""
 
-        response = await self.model.generate_content_async(prompt)
+        response = await asyncio.to_thread(self.model.generate_content, prompt)
         return response.text
 
     async def generate_chapter(
@@ -116,7 +117,7 @@ class GeminiProvider:
 【この章の設定・展開メモ】
 {setting}"""
 
-        response = await self.model.generate_content_async(prompt)
+        response = await asyncio.to_thread(self.model.generate_content, prompt)
         return response.text
 
     async def generate_epilogue(
@@ -137,7 +138,7 @@ class GeminiProvider:
 【エピローグ設定】
 {setting}"""
 
-        response = await self.model.generate_content_async(prompt)
+        response = await asyncio.to_thread(self.model.generate_content, prompt)
         return response.text
 
     async def assist_ideas(
@@ -159,7 +160,7 @@ class GeminiProvider:
 【ユーザーのアイデア】
 {user_input}"""
 
-        response = await self.model.generate_content_async(prompt)
+        response = await asyncio.to_thread(self.model.generate_content, prompt)
         text = response.text
 
         # レスポンスをパースして案を分離する
