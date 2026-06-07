@@ -3,6 +3,7 @@ import { useNovel, useNovelDispatch } from "../context/NovelContext";
 import { novelApi } from "../hooks/useNovelApi";
 import GeneratingOverlay from "./GeneratingOverlay";
 import ChapterViewer from "./ChapterViewer";
+import IdeaAssistPanel from "./IdeaAssistPanel";
 
 export default function ChapterEditor() {
   const { setup, chapters, isGenerating, phase } = useNovel();
@@ -15,6 +16,10 @@ export default function ChapterEditor() {
   const currentChapterNumber =
     chapters.filter((ch) => ch.type === "chapter").length;
   const nextChapterNumber = currentChapterNumber + 1;
+
+  const handleIdeaSelect = (idea) => {
+    setSetting(idea);
+  };
 
   const handleGenerate = async () => {
     if (!setting.trim()) {
@@ -48,9 +53,15 @@ export default function ChapterEditor() {
         <div className="panel fade-in" style={{ marginTop: "var(--sp-lg)" }}>
           <div className="panel-header">
             <span className="panel-title">
-              📝 第{nextChapterNumber}章の設定
+              📝 第{nextChapterNumber}章の執筆
             </span>
           </div>
+
+          {setup?.mode === "easy" && (
+            <div style={{ marginBottom: "var(--sp-lg)" }}>
+              <IdeaAssistPanel onSelect={handleIdeaSelect} phase="chapter" chapters={chapters} />
+            </div>
+          )}
 
           <div className="form-group" style={{ marginBottom: "var(--sp-md)" }}>
             <label className="form-label">📝 章のタイトル（オプション）</label>

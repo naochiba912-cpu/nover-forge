@@ -147,5 +147,10 @@ async def assist_ideas(
     provider: GeminiProvider = Depends(get_ai_provider)
 ):
     """ユーザー入力を元にアイデアを拡張・提案する。"""
-    suggestions = await provider.assist_ideas(request.setup, request.user_input)
+    suggestions = await provider.assist_ideas(
+        request.setup, 
+        request.user_input,
+        request.phase,
+        request.chapters
+    )
     return IdeaAssistResponse(suggestions=suggestions)

@@ -90,6 +90,8 @@ class UpdateChapterRequest(BaseModel):
 class IdeaAssistRequest(BaseModel):
     setup: NovelSetupResponse
     user_input: str
+    phase: str = "prologue"
+    chapters: List[Chapter] = Field(default_factory=list)
 
 
 class IdeaAssistResponse(BaseModel):

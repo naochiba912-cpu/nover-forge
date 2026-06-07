@@ -3,12 +3,17 @@ import { useNovel, useNovelDispatch } from "../context/NovelContext";
 import { novelApi } from "../hooks/useNovelApi";
 import GeneratingOverlay from "./GeneratingOverlay";
 import ChapterViewer from "./ChapterViewer";
+import IdeaAssistPanel from "./IdeaAssistPanel";
 
 export default function EpilogueEditor() {
   const { setup, chapters, isGenerating, phase } = useNovel();
   const dispatch = useNovelDispatch();
   const [setting, setSetting] = useState("");
   const [error, setError] = useState("");
+
+  const handleIdeaSelect = (idea) => {
+    setSetting(idea);
+  };
 
   const handleGenerate = async () => {
     if (!setting.trim()) {
@@ -43,6 +48,12 @@ export default function EpilogueEditor() {
               『{setup?.title}』の物語を締めくくるエピローグの設定を入力してください。
             </p>
           </div>
+
+          {setup?.mode === "easy" && (
+            <div style={{ marginBottom: "var(--sp-lg)" }}>
+              <IdeaAssistPanel onSelect={handleIdeaSelect} phase="epilogue" chapters={chapters} />
+            </div>
+          )}
 
           <textarea
             className="form-textarea"

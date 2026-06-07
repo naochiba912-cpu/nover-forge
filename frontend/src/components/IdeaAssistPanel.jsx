@@ -2,7 +2,7 @@ import { useState } from "react";
 import { novelApi } from "../hooks/useNovelApi";
 import { useNovel } from "../context/NovelContext";
 
-export default function IdeaAssistPanel({ onSelect }) {
+export default function IdeaAssistPanel({ onSelect, phase = "prologue", chapters = [] }) {
   const { setup } = useNovel();
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -10,13 +10,11 @@ export default function IdeaAssistPanel({ onSelect }) {
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
   const handleAssist = async () => {
-    if (!input.trim()) return;
-
     setIsLoading(true);
     setSuggestions([]);
     setSelectedIndex(-1);
     try {
-      const result = await novelApi.assistIdeas(setup, input.trim());
+      const result = await novelApi.assistIdeas(setup, input.trim(), phase, chapters);
       setSuggestions(result.suggestions);
     } catch (err) {
       console.error("Idea assist error:", err);
@@ -46,7 +44,7 @@ export default function IdeaAssistPanel({ onSelect }) {
           marginBottom: "var(--sp-md)",
         }}
       >
-        キーワードや短い文を入力すると、AIがプロローグの設定案を提案します。
+        キーワードを入力してアシストを受けるか、空欄のまま「AIにおまかせ提案」を押してください。
       </p>
 
       <div style={{ display: "flex", gap: "var(--sp-sm)" }}>
@@ -61,9 +59,9 @@ export default function IdeaAssistPanel({ onSelect }) {
         <button
           className="btn btn-primary"
           onClick={handleAssist}
-          disabled={isLoading || !input.trim()}
+          disabled={isLoading}
         >
-          {isLoading ? "⏳ 生成中..." : "💡 アシスト"}
+          {isLoading ? "⏳ 生成中..." : (input.trim() ? "💡 キーワードから提案" : "🎲 AIにおまかせ提案")}
         </button>
       </div>
 

@@ -169,23 +169,34 @@ class GeminiProvider:
         return response.text
 
     async def assist_ideas(
-        self, setup: NovelSetupResponse, user_input: str
+        self, setup: NovelSetupResponse, user_input: str, phase: str = "prologue", chapters: List[Chapter] = None
     ) -> List[str]:
-        context = self._build_context(setup)
+        context = self._build_context(setup, chapters)
+        
+        phase_instructions = {
+            "prologue": "物語の導入となるプロローグの設定案",
+            "chapter": "これまでの展開を受けた、次の章のあらすじ・展開案",
+            "epilogue": "これまでの展開を受けた、物語の結末・後日談の案"
+        }
+        
+        target = phase_instructions.get(phase, "物語の展開案")
+        
+        if user_input.strip():
+            user_input_section = f"\nユーザーが以下のキーワードやアイデアメモを提供しています。これを取り入れてください。\n\n【ユーザーのアイデア】\n{user_input}\n"
+        else:
+            user_input_section = "\nユーザーからの指定はありません。あなたの創造力を活かして、魅力的な展開を提案してください。\n"
+
         prompt = f"""{context}
 
 【指示】
-ユーザーが以下のキーワードやアイデアメモを提供しています。
-これを元に、プロローグの設定案を3つ提案してください。
-
+{target}を3つ提案してください。
+{user_input_section}
 ルール:
 - 各案は100〜150文字程度で簡潔に
 - それぞれ異なるアプローチ・方向性の提案にする
 - 各案は「【案1】」「【案2】」「【案3】」で始める
 - 余計な前置きや説明は不要
-
-【ユーザーのアイデア】
-{user_input}"""
+"""
 
         response = await asyncio.to_thread(self.model.generate_content, prompt)
         text = response.text

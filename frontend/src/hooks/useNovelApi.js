@@ -72,10 +72,10 @@ export const novelApi = {
     }),
 
   /** アイデアアシスト */
-  assistIdeas: (setup, userInput) =>
+  assistIdeas: (setup, userInput, phase = "prologue", chapters = []) =>
     request("/assist-ideas", {
       method: "POST",
-      body: JSON.stringify({ setup, user_input: userInput }),
+      body: JSON.stringify({ setup, user_input: userInput, phase, chapters }),
     }),
 };
 
