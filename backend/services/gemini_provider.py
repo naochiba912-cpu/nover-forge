@@ -9,7 +9,7 @@ class GeminiProvider:
     def __init__(self, api_key: str):
         if not api_key:
             raise ValueError("Gemini APIキーが必要です。")
-        genai.configure(api_key=api_key)
+        genai.configure(api_key=api_key, transport="rest")
         self.model = genai.GenerativeModel("gemini-2.0-flash")
 
     def _build_context(
