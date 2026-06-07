@@ -160,7 +160,7 @@ export default function SetupForm() {
                       checked={length === "short"}
                       onChange={(e) => setLength(e.target.value)}
                     />
-                    短編
+                    短編集
                   </label>
                   <label className="form-radio">
                     <input

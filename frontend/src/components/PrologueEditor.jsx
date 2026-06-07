@@ -76,7 +76,7 @@ export default function PrologueEditor() {
             <span style={{ color: "var(--text-secondary)", fontWeight: 600 }}>
               長さ:
             </span>
-            <span>{setup?.length === "short" ? "短編" : "長編"}</span>
+            <span>{setup?.length === "short" ? "短編集" : "長編"}</span>
             {setup?.world_setting && (
               <>
                 <span

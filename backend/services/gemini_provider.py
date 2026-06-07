@@ -23,7 +23,7 @@ class GeminiProvider:
 【小説の設定】
 - タイトル: {setup.title}
 - ジャンル: {setup.genre}
-- 長さ: {"短編" if setup.length == NovelLength.SHORT else "長編"}
+- 長さ: {"短編集" if setup.length == NovelLength.SHORT else "長編"}
 """
         if setup.world_setting:
             context += f"- 世界観: {setup.world_setting}\n"
