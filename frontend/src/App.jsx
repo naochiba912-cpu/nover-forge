@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNovel, useNovelDispatch } from "./context/NovelContext";
-import TitleBar from "./components/TitleBar";
 import StatusBar from "./components/StatusBar";
 import SetupForm from "./components/SetupForm";
 import PrologueEditor from "./components/PrologueEditor";
@@ -241,7 +240,6 @@ export default function App() {
 
   return (
     <div className="window-frame">
-      <TitleBar />
       <MenuBar 
         onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)} 
         onOpenHelpModal={() => setIsHelpModalOpen(true)}
